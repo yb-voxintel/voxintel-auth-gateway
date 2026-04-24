@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>VoxIntel Login</title>
+    <style>
+        body { font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background: #f5f5f5; }
+        .login-box { background: white; padding: 40px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); text-align: center; }
+        h1 { color: #6B21A8; margin-bottom: 10px; } /* VoxIntel purple */
+        p { color: #666; margin-bottom: 30px; }
+        .btn { display: block; width: 100%; padding: 12px; margin: 10px 0; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; }
+        .btn-retool { background: #6B21A8; color: white; }
+        .btn-sso { background: #fff; color: #6B21A8; border: 2px solid #6B21A8; }
+        .loading { display: none; }
+    </style>
+</head>
+<body>
+    <div class="login-box">
+        <h1>VoxIntel AI</h1>
+        <p id="subtitle">Sign in to continue</p>
+        
+        <div id="retail-login">
+            <button class="btn btn-retool" onclick="goToRetool()">Continue to Retool Login</button>
+        </div>
+        
+        <div id="enterprise-login" style="display:none;">
+            <p>Enterprise account detected</p>
+            <button class="btn btn-sso" onclick="startSSO()">Sign in with SSO</button>
+        </div>
+        
+        <div id="loading" class="loading">Redirecting...</div>
+    </div>
+
+    <script>
+        // CONFIGURATION - You'll fill these in from WorkOS Dashboard
+        const WORKOS_CLIENT_ID = 'YOUR_CLIENT_ID_HERE';
+        const RETOOL_APP_URL = 'https://yourretoolapp.retool.com'; // Your Retool app URL
+        
+        // Check for ?org= parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const orgId = urlParams.get('org');
+        
+        if (orgId) {
+            // Enterprise user - show SSO option
+            document.getElementById('retail-login').style.display = 'none';
+            document.getElementById('enterprise-login').style.display = 'block';
+            document.getElementById('subtitle').textContent = 'Enterprise sign-in required';
+        }
+        
+        function goToRetool() {
+            window.location.href = RETOOL_APP_URL;
+        }
+        
+        function startSSO() {
+            document.getElementById('loading').style.display = 'block';
+            
+            // Build WorkOS AuthKit authorization URL
+            const redirectUri = window.location.origin + '/callback';
+            const authUrl = `https://api.workos.com/user_management/authorize?` +
+                `client_id=${WORKOS_CLIENT_ID}` +
+                `&organization_id=${orgId}` +
+                `&redirect_uri=${encodeURIComponent(redirectUri)}` +
+                `&response_type=code`;
+            
+            window.location.href = authUrl;
+        }
+    </script>
+</body>
+</html>
