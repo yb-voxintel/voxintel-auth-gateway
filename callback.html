@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Completing Sign In...</title>
+    <style>
+        body { font-family: Arial; display: flex; justify-content: center; align-items: center; height: 100vh; background: #f5f5f5; }
+        .box { background: white; padding: 40px; border-radius: 8px; text-align: center; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h2>Completing sign in...</h2>
+        <p>Please wait while we verify your account.</p>
+    </div>
+    
+    <script>
+        // This page receives the auth code from WorkOS
+        // In production, you'd exchange this code for a token via your backend
+        // For now, this is a placeholder that shows the flow works
+        
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get('code');
+        const error = urlParams.get('error');
+        
+        if (error) {
+            alert('Login failed: ' + error);
+            window.location.href = '/';
+        } else if (code) {
+            // In the full implementation, this code gets exchanged for a JWT
+            // Then you redirect to Retool with that JWT
+            console.log('Auth code received:', code);
+            
+            // Placeholder: Show success and redirect to Retool
+            setTimeout(() => {
+                window.location.href = 'https://yourretoolapp.retool.com';
+            }, 2000);
+        }
+    </script>
+</body>
+</html>
